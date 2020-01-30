@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 int main(int argc, char** argv)
@@ -8,9 +9,16 @@ int main(int argc, char** argv)
        return 1;
     }
 
-    for (int i = 0; i < stoi(argv[1]); i++) {
-        cout << "Hello World!\n";
+    /*string input;
+    cout << "Please enter what you would like: ";
+    cin>>input;*/
+    
+    for (int i = 0; i < stoi(argv[1])  ; i++) { //argc
+    cout << argv[i] << endl;
     }
+    
 
     return 0;
 }
+
+//ne hellowordot írjon hanem második paraméterben megadott akarmit
