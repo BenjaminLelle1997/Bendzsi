@@ -1,24 +1,20 @@
-#include <iostream>
-#include <string>
+#include<iostream>
 using namespace std;
 
-int main(int argc, char** argv)
-{
-    if (argc != 2) {
-       std::cerr << "Not enough parameters" << endl;
-       return 1;
-    }
+int main(int argc, char** argv) {
 
-    /*string input;
-    cout << "Please enter what you would like: ";
-    cin>>input;*/
-    
-    for (int i = 0; i < stoi(argv[1])  ; i++) { //argc
-    cout << argv[i] << endl;
-    }
-    
+   if (argc < 3) {
+      std::cerr << "Not enough parameters! Your quantity or expression is missing!" << endl;
+      return 1;
+   }
 
-    return 0;
+   else if (argc > 3) {
+      std::cerr << "You typed too much parameters !" << endl;
+      return 1;
+   }
+
+   for (int i = 0; i < stoi(argv[1]); ++i) {
+      cout << argv[2] << endl;
+   }
+   return 0;
 }
-
-//ne hellowordot írjon hanem második paraméterben megadott akarmit
