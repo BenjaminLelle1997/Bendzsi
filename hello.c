@@ -15,8 +15,7 @@ int main(int argc, char** argv) {
    }
 
    for (int i = 0; i < atoi(argv[1]); ++i) {
-      printf(argv[2]);
-      printf("\n");
+      printf("%s\n",argv[2]);
    }
    return 0;
 }
