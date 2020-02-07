@@ -1,12 +1,12 @@
 #include "input.h"
 
-/*
-Input::Input():
+
+Input::Input(int argc, char **argv):
          argc(argc),
          argv(argv)
 {
 
-}*/
+}
 
 /*
 Input::~Input()
@@ -20,7 +20,7 @@ Input::~Input()
 
 void Input::start()
 {
-    int ok=scan_examing(); 
+    int ok = scan_examing(); 
 }
 
 int Input::getArgc()
@@ -29,7 +29,7 @@ int Input::getArgc()
 }
 
 
-char Input::getArgv()
+char** Input::getArgv()
 {
 	return argv;
 }
@@ -55,11 +55,23 @@ int Input::scan_examing() {
 
         else
         {
-		 for (int i = 0; i < stoi(argv[1]); ++i) {
-      		 cout << argv[2] << endl;
-  		  }
-   		 return 0;
+            char text[1000];
+            print_text(stoi(argv[1]), argv[2], text);
+            cout << text; 
+             return 0;
         }
 
 
+}
+
+#include <string.h>
+
+void Input::print_text(int count, char* what_to_print,  char *text)
+{
+   int pos = 0;
+
+   for (int i = 0; i < count; ++i) {
+      int n = sprintf(text + pos, "%s\r\n", what_to_print);
+      pos += n;
+   }
 }

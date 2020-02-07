@@ -11,7 +11,7 @@ class Input
 		char** argv;
 
 	public:
-		//Input();
+		Input(int argc, char ** argv);
 		
         //~Input();
         
@@ -19,9 +19,13 @@ class Input
         
 		int getArgc();
 		
-		char getArgv();
+		char** getArgv();
 
 		int scan_examing();
+
+
+     protected:
+         void print_text(int count, char* what_to_print, char *text);
 
 		
 };
