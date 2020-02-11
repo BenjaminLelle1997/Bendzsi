@@ -2,29 +2,30 @@
 #define INPUT_H
 
 #include <iostream>
+#include "test.h"
 using namespace std;
 
 class Input
 {
 	
 		int argc;
-		char** argv;
+		char ** argv;
 
 	public:
 		Input(int argc, char ** argv);
 		
-        //~Input();
+        void setArgc(int num);
         
-        void start();
+        void setArgv(char** argumentums);
         
-		int getArgc();
+        int getArgc();
 		
 		char** getArgv();
+        
+       	int scan_examing();
 
-		int scan_examing();
 
-
-     protected:
+     public:
          void print_text(int count, char* what_to_print, char *text);
 
 		
