@@ -29,7 +29,13 @@ void timeout_handler(void * p_context);
 
 void single_shot_timer_handler(void * p_context);
 
-ret_code_t create_timers(); 
+ret_code_t create_timer_1();
+
+ret_code_t create_timer_2();
+
+ret_code_t create_timer_3();
+
+ret_code_t create_timer_4();
 
 void bsp_evt_handler(bsp_event_t evt);
 
