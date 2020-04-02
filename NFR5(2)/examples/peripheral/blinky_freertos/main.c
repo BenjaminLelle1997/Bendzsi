@@ -189,11 +189,18 @@ int main(void)
 #include "app_timer.h"
 
 #define LED_BLINKING_DELAY_MS   1000
+#define LED_BLINKING_SHOT   2000
 
 #define TASK_DBG_LED_PRIORITY 2
 #define TASK_BSP_PRIORITY     2
 
-static TaskHandle_t  g_dbg_led_task_handle;
+static TaskHandle_t  g_dbg_led_task_handle_1;
+
+static TaskHandle_t  g_dbg_led_task_handle_2;
+
+static TimerHandle_t  g_dbg_led_timer_handle_1;
+
+static TimerHandle_t  g_dbg_led_timer_handle_2;
 
 
 //#define BUTTON_PREV_ID           0                           /**< Button used to switch the state. */
@@ -240,7 +247,7 @@ static void log_init(void)
 }
 
 
-void task_dbg_led(void * pvParameter)
+void task_dbg_led_1(void * pvParameter)
 {
     UNUSED_PARAMETER(pvParameter);
     
@@ -249,6 +256,22 @@ void task_dbg_led(void * pvParameter)
     //SEGGER_RTT_printf(0,"+ task_dbg_led()\n");
         bsp_board_led_invert(BSP_BOARD_LED_0);
         vTaskDelay(LED_BLINKING_DELAY_MS);
+        
+    }
+
+}
+
+
+void task_dbg_led_2(void * pvParameter)
+{
+    UNUSED_PARAMETER(pvParameter);
+    
+
+    while (true) {
+    //SEGGER_RTT_printf(0,"+ task_dbg_led()\n");
+        bsp_board_led_on(BSP_BOARD_LED_1);
+        vTaskDelay(LED_BLINKING_SHOT);
+        
     
     }
 
@@ -257,7 +280,7 @@ void task_dbg_led(void * pvParameter)
 
 static void bsp_evt_handler(bsp_event_t evt)
 {
-          //static uint32_t timeout_1 = 0;
+       //static uint32_t timeout_1 = 0;
         /*static uint32_t timeout_2 = 2000;
         static uint32_t timeout_3 = 4000;
         static uint32_t timeout_4 = 8000;*/
@@ -267,8 +290,8 @@ static void bsp_evt_handler(bsp_event_t evt)
         //uint32_t err_code_3; 
         //uint32_t err_code_4;       
 
-        //switch (evt)
-        //{
+        switch (evt)
+        {
             /*bsp_board_led_invert(BSP_BOARD_LED_0);
             bsp_board_led_invert(BSP_BOARD_LED_1);
             bsp_board_led_invert(BSP_BOARD_LED_2);
@@ -277,7 +300,7 @@ static void bsp_evt_handler(bsp_event_t evt)
 
 
 
-           // case BSP_EVENT_KEY_0:            // On Button 1 press. 
+           case BSP_EVENT_KEY_0:            // On Button 1 press. 
           
                
                 //bsp_board_leds_off(); 
@@ -291,18 +314,80 @@ static void bsp_evt_handler(bsp_event_t evt)
                 err_code_1 = app_timer_start(m_single_shot_timer_1, APP_TIMER_TICKS(timeout_1), NULL);
                 APP_ERROR_CHECK(err_code_1);*/
 
-            //  task_dbg_led(void * pvParameter);
+
+    // Create task for LED0 blinking with priority set to 2 
+    UNUSED_VARIABLE(xTaskCreate(task_dbg_led_1, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &g_dbg_led_task_handle_1));
+
+    // Start timer for LED0 blinking 
+    g_dbg_led_timer_handle_1 = xTimerCreate( "LED0", LED_BLINKING_DELAY_MS, pdTRUE, NULL, task_dbg_led_1);
+    UNUSED_VARIABLE(xTimerStart( g_dbg_led_timer_handle_1, 0));
 
 
-            //    break;
+    
+
+               break;
+
+            
+            case BSP_EVENT_KEY_1:            // On Button 2 press. 
+   // Create task for LED1 blinking with priority set to 2 
+    UNUSED_VARIABLE(xTaskCreate(task_dbg_led_2, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &g_dbg_led_task_handle_2));
+
+    // Start timer for LED1 blinking 
+    g_dbg_led_timer_handle_2 = xTimerCreate( "LED1", LED_BLINKING_SHOT, pdTRUE, NULL, task_dbg_led_2);
+    UNUSED_VARIABLE(xTimerStart(g_dbg_led_timer_handle_2, 0));
+               
 
 
+            break;
+
+               default:
+
+               break;
+
+        }
+}
+
+
+
+/**@brief Function for initializing low frequency clock.
+ */
+void clock_initialization()
+{
+    NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
+    NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
+    NRF_CLOCK->TASKS_LFCLKSTART    = 1;
+
+    while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0)
+    {
+        // Do nothing.
+    }
+}
+
+/**@brief Function for initializing bsp module.
+ * @param BSP_INIT_LEDS Initalizating the leds.
+ * @param BSP_INIT_BUTTONS Initalizing the buttonds.
+ * @param bsp_evt_handler Inviting the own function.
+ */
+void bsp_configuration()
+{
+    uint32_t err_code;
+
+    err_code = bsp_init(BSP_INIT_LEDS | BSP_INIT_BUTTONS, bsp_evt_handler);
+    bsp_board_init(BSP_INIT_LEDS);
+    APP_ERROR_CHECK(err_code);
 }
 
 
 
 int main(void)
 {
+    clock_initialization();
+    
+    ret_code_t err_code_1 = app_timer_init();
+    APP_ERROR_CHECK(err_code_1);
+   
+
+
     ret_code_t err_code;
 
     /* Initialize clock driver for better time accuracy in FREERTOS */
@@ -315,18 +400,21 @@ int main(void)
      //SEGGER_RTT_printf(0,"+ bsp_init() ERROR %d\n", res);
     } else {
      //SEGGER_RTT_printf(0,"+ bsp_init() OK %d\n", res);
+
+         NRF_LOG_INFO("BSP example started.");
+         bsp_configuration();
     }
 
     /* Create and Initialize all the tasks. */
     //SEGGER_RTT_printf(0,"Creating tasks...");
-    UNUSED_VARIABLE(xTaskCreate(task_dbg_led, "LED0",
-                    configMINIMAL_STACK_SIZE + 1024,
-                    NULL, TASK_DBG_LED_PRIORITY,
-                    &g_dbg_led_task_handle));
+    
 
 
     
    // SEGGER_RTT_printf(0,"OK.\n");
+
+
+
 
     /* Activate deep sleep mode */
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
