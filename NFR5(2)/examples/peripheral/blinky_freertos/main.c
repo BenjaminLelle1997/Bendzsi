@@ -77,11 +77,12 @@
 #define TASK_3_PERIOD        4000             
 #define TASK_4_DELAY      200
 
-TaskHandle_t  led_1_toggle_task_handle; 
+//TaskHandle_t  led_1_toggle_task_handle; 
 //TaskHandle_t  led_2_toggle_task_handle;
-TimerHandle_t led_2_timer_handle;   
-TaskHandle_t  led_3_toggle_task_handle; 
-TaskHandle_t  led_4_toggle_task_handle;  
+//TimerHandle_t led_2_timer_handle;   
+//TaskHandle_t  led_3_toggle_task_handle; 
+//TaskHandle_t  led_4_toggle_task_handle;  
+TaskHandle_t  leds_toggle_task_handle;  
 
 
 static void log_init(void)
@@ -97,34 +98,10 @@ static void log_init(void)
  *
  * @param[in] pvParameter   Pointer that will be used as the parameter for the task.
  */
-static void led_1_task_function (void * pvParameter)
-{
 
-    UNUSED_PARAMETER(pvParameter);
-   
-    bsp_board_led_on(BSP_BOARD_LED_0);
 
-    vTaskDelay(TASK_1_PERIOD);
-
-    bsp_board_led_off(BSP_BOARD_LED_0);
-
-}
 
 /*
-static void led_2_task_function (void * pvParameter)
-{
-    
-    UNUSED_PARAMETER(pvParameter);
-   
-    bsp_board_led_invert(BSP_BOARD_LED_1);
-
-    vTaskDelay(TASK_2_PERIOD);
-
-    bsp_board_led_off(BSP_BOARD_LED_1);
-
-}
-*/
-
 static void led_2_timer_callback (void * pvParameter)
 {
     UNUSED_PARAMETER(pvParameter);
@@ -133,37 +110,10 @@ static void led_2_timer_callback (void * pvParameter)
     bsp_board_led_off(BSP_BOARD_LED_1);
    
 }
+*/
 
 
-static void led_3_task_function (void * pvParameter)
-{
-   
-    UNUSED_PARAMETER(pvParameter);
-   
-    bsp_board_led_on(BSP_BOARD_LED_2);
 
-    vTaskDelay(TASK_3_PERIOD);
-
-    bsp_board_led_off(BSP_BOARD_LED_2);
-
-}
-
-
-static void led_4_task_function (void * pvParameter)
-{
-   
-    UNUSED_PARAMETER(pvParameter);
-    
-    while(true)
-    {
-
-        bsp_board_led_invert(BSP_BOARD_LED_3);
-
-        vTaskDelay(TASK_4_DELAY);
-
-    }
-
-}
 
 
 static void bsp_evt_handler(bsp_event_t evt)
@@ -175,7 +125,22 @@ static void bsp_evt_handler(bsp_event_t evt)
         case BSP_EVENT_KEY_0:
 
             
-        UNUSED_VARIABLE(xTaskCreate(led_1_task_function, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_1_toggle_task_handle));
+        //UNUSED_VARIABLE(xTaskCreate(led_1_task_function, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_1_toggle_task_handle));
+
+
+            static void led_1_task_function (void * pvParameter)
+            {
+
+                UNUSED_PARAMETER(pvParameter);
+               
+                bsp_board_led_on(BSP_BOARD_LED_0);
+
+                vTaskDelay(TASK_1_PERIOD);
+
+                bsp_board_led_off(BSP_BOARD_LED_0);
+
+            }
+
 
         break;
 
@@ -185,23 +150,67 @@ static void bsp_evt_handler(bsp_event_t evt)
 
         //UNUSED_VARIABLE(xTaskCreate(led_2_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_2_toggle_task_handle));          
 
-        led_2_timer_handle = xTimerCreate( "LED1", TASK_2_PERIOD, pdTRUE, NULL, led_2_timer_callback);
+        /*led_2_timer_handle = xTimerCreate( "LED1", TASK_2_PERIOD, pdTRUE, NULL, led_2_timer_callback);
         UNUSED_VARIABLE(xTimerStart(led_2_timer_handle, 0));
         vTaskDelay(TASK_2_PERIOD);
-        UNUSED_VARIABLE(xTimerStop(led_2_timer_handle, 0));    
+        UNUSED_VARIABLE(xTimerStop(led_2_timer_handle, 0)); */  
+
+
+
+            static void led_2_task_function (void * pvParameter)
+            {
+                
+                UNUSED_PARAMETER(pvParameter);
+               
+                bsp_board_led_invert(BSP_BOARD_LED_1);
+
+                vTaskDelay(TASK_2_PERIOD);
+
+                bsp_board_led_off(BSP_BOARD_LED_1);
+
+            } 
 
         break;
 
         case BSP_EVENT_KEY_2:
 
-        UNUSED_VARIABLE(xTaskCreate(led_3_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_3_toggle_task_handle));          
+        //UNUSED_VARIABLE(xTaskCreate(led_3_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_3_toggle_task_handle));          
  
+            static void led_3_task_function (void * pvParameter)
+            {
+               
+                UNUSED_PARAMETER(pvParameter);
+               
+                bsp_board_led_on(BSP_BOARD_LED_2);
+
+                vTaskDelay(TASK_3_PERIOD);
+
+                bsp_board_led_off(BSP_BOARD_LED_2);
+
+            }
+
 
         break;
 
         case BSP_EVENT_KEY_3:
 
-        UNUSED_VARIABLE(xTaskCreate(led_4_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_4_toggle_task_handle));          
+        //UNUSED_VARIABLE(xTaskCreate(led_4_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_4_toggle_task_handle));          
+
+            static void led_4_task_function (void * pvParameter)
+            {
+               
+                UNUSED_PARAMETER(pvParameter);
+                
+                while(true)
+                {
+
+                    bsp_board_led_invert(BSP_BOARD_LED_3);
+
+                    vTaskDelay(TASK_4_DELAY);
+
+                }
+
+            }
 
         break;
 
@@ -251,6 +260,9 @@ int main(void)
     //UNUSED_VARIABLE(xTaskCreate(led_3_task_function, "LED2", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_3_toggle_task_handle));
     
     //UNUSED_VARIABLE(xTaskCreate(led_4_task_function, "LED3", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_4_toggle_task_handle));
+
+    UNUSED_VARIABLE(xTaskCreate(bsp_evt_handler, "LEDS_NUMBER", configMINIMAL_STACK_SIZE + 200, NULL, 2, &leds_toggle_task_handle));
+
 
    /* led_2_timer_handle = xTimerCreate( "LED1", TASK_2_PERIOD, pdTRUE, NULL, led_2_timer_callback);
     UNUSED_VARIABLE(xTimerStart(led_2_timer_handle, 0));
