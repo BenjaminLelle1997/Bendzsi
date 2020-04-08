@@ -191,13 +191,13 @@ static void bsp_evt_handler(bsp_event_t evt)
             
         //UNUSED_VARIABLE(xTaskCreate(led_1_task_function, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_1_toggle_task_handle));
 
-        /*
+        
         led_1_timer_handle = xTimerCreate( "LED0", TASK_1_PERIOD, pdTRUE, NULL, led_1_timer_callback);
         UNUSED_VARIABLE(xTimerStart(led_1_timer_handle, 0));
-        vTaskDelay(TASK_1_PERIOD);
-        UNUSED_VARIABLE(xTimerStop(led_1_timer_handle, 0));  */ 
+        //vTaskDelay(TASK_1_PERIOD);
+        //UNUSED_VARIABLE(xTimerStop(led_1_timer_handle, 0));   
 
-        led_1_timer_callback(led_1_timer_handle);  
+        //led_1_timer_callback(led_1_timer_handle);  
 
         break;
 
@@ -207,30 +207,30 @@ static void bsp_evt_handler(bsp_event_t evt)
 
         //UNUSED_VARIABLE(xTaskCreate(led_2_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_2_toggle_task_handle));          
 
-        /*led_2_timer_handle = xTimerCreate( "LED1", TASK_2_PERIOD, pdTRUE, NULL, led_2_timer_callback);
+        led_2_timer_handle = xTimerCreate( "LED1", TASK_2_PERIOD, pdTRUE, NULL, led_2_timer_callback);
         UNUSED_VARIABLE(xTimerStart(led_2_timer_handle, 0));
-        vTaskDelay(TASK_2_PERIOD);
-        UNUSED_VARIABLE(xTimerStop(led_2_timer_handle, 0)); */ 
+        //vTaskDelay(TASK_2_PERIOD);
+        //UNUSED_VARIABLE(xTimerStop(led_2_timer_handle, 0)); 
 
         
-        led_2_timer_callback(led_2_timer_handle);
+        //led_2_timer_callback(led_2_timer_handle);
          
 
         break;
 
         case BSP_EVENT_KEY_2:
 
-        //UNUSED_VARIABLE(xTaskCreate(led_3_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_3_toggle_task_handle));          
+        UNUSED_VARIABLE(xTaskCreate(led_3_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_3_toggle_task_handle));          
  
-        led_3_task_function(led_3_toggle_task_handle);
+        //led_3_task_function(led_3_toggle_task_handle);
 
         break;
 
         case BSP_EVENT_KEY_3:
 
-        //UNUSED_VARIABLE(xTaskCreate(led_4_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_4_toggle_task_handle));          
+        UNUSED_VARIABLE(xTaskCreate(led_4_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_4_toggle_task_handle));          
 
-        led_4_task_function(led_4_toggle_task_handle);
+        //led_4_task_function(led_4_toggle_task_handle);
 
         break;
 
@@ -277,17 +277,17 @@ int main(void)
     
     //UNUSED_VARIABLE(xTaskCreate(led_2_task_function, "LED1", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_2_toggle_task_handle));
     
-    UNUSED_VARIABLE(xTaskCreate(led_3_task_function, "LED2", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_3_toggle_task_handle));
+    //UNUSED_VARIABLE(xTaskCreate(led_3_task_function, "LED2", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_3_toggle_task_handle));
     
-    UNUSED_VARIABLE(xTaskCreate(led_4_task_function, "LED3", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_4_toggle_task_handle));
+    //UNUSED_VARIABLE(xTaskCreate(led_4_task_function, "LED3", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_4_toggle_task_handle));
 
-    led_1_timer_handle = xTimerCreate( "LED0", TASK_1_PERIOD, pdTRUE, NULL, led_1_timer_callback);
+    /*led_1_timer_handle = xTimerCreate( "LED0", TASK_1_PERIOD, pdTRUE, NULL, led_1_timer_callback);
     UNUSED_VARIABLE(xTimerStart(led_1_timer_handle, 0));
 
 
     led_2_timer_handle = xTimerCreate( "LED1", TASK_2_PERIOD, pdTRUE, NULL, led_2_timer_callback);
     UNUSED_VARIABLE(xTimerStart(led_2_timer_handle, 0));
-    //UNUSED_VARIABLE(xTimerStop(led_2_timer_handle, 0));
+    //UNUSED_VARIABLE(xTimerStop(led_2_timer_handle, 0));*/
 
 
 
