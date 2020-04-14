@@ -139,7 +139,7 @@ static void led_1_task_function (void * pvParameter)
 
         
     }
-    bsp_board_led_off(BSP_BOARD_LED_0);
+   
 
 }
 
@@ -147,52 +147,30 @@ static void led_1_task_function (void * pvParameter)
 static void bsp_evt_handler(bsp_event_t evt)
 {
     //SEGGER_RTT_printf(0,"+ bsp_evt_handler()\n");
-    int i;
+   
+   
 
-    for(i=0;i<2;i++)
-    {
-    i=1;
-    if(i==1)
-    {
     switch(evt)
     {
-
+        
        case BSP_EVENT_KEY_0:
-
-        UNUSED_VARIABLE(xTaskCreate(led_1_task_function, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_1_toggle_task_handle));
-
+       
+            UNUSED_VARIABLE(xTaskCreate(led_1_task_function, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &led_1_toggle_task_handle));
+        
         break;
 
-              
+       case BSP_EVENT_KEY_1:
+
+        UNUSED_VARIABLE(xTaskResumeAll());
+        bsp_board_led_off(BSP_BOARD_LED_0);
+        break;
+
         default:
 
         break;
 
 
-    } 
     }
-
-    i=2;
-    if(i==2)
-    {
-        switch(evt)
-        {   
-
-           case BSP_EVENT_KEY_0:
-
-            bsp_board_led_off(BSP_BOARD_LED_0);
-            break;
-
-                  
-            default:
-
-            break;
-
-
-        } 
-
-    } 
-    }  
 }
 
 
